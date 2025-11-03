@@ -1,11 +1,35 @@
 
 <?php
+include '../adminbashboard/common/validation.php';
 session_start();
 include 'lib/connection.php';
 $errors = [];
 $data = [];
 if(isset($_POST['submit'])){
-    
+    $name = Validation($_POST['name']);
+    $email = Validation($_POST['email']);
+    $number = Validation($_POST['number']);
+    $name = Validation($_POST['name']);
+    // ✅ Check for empty fields
+    if (empty($name)) {
+        $errors['name'] = "Name is required.";
+    }
+    if (empty($email)) {
+        $errors['email'] = "Email is required.";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors['email'] = "Invalid email format.";
+    }
+    if (empty($number)) {
+        $errors['number'] = "Phone number is required.";
+    }
+ if(!empty($_FILES['image']['name'])){
+    $imageName = $_FILES['image']['name'];
+    $imageTmp = $_FILES['image']['tmp_name'];
+    $imageSize = $_FILES['image']['size'];
+    $imageExt = strtolower(pathinfo($imageName,PATHINFO_EXTENSION));
+   $allowed   = ['jpg', 'jpeg', 'png'];
+ }
+   
 }
 ?>
 
@@ -89,16 +113,16 @@ if(isset($_POST['submit'])){
       <!-- File Upload -->
       <div class="mb-3">
         <label class="form-label">Profile Image</label>
-        <input type="file" name="file" class="form-control">
-        <div class="text-danger small"><?= $errors['file'] ?? '' ?></div>
+        <input type="file" name="image" class="form-control">
+        <div class="text-danger small"><?= $errors['image'] ?? '' ?></div>
       </div>
 
       <!-- Phone -->
       <div class="mb-3">
         <label class="form-label">Phone</label>
-        <input type="text" name="phone" class="form-control" placeholder="Enter your phone number"
-               value="<?= $user['phone'] ?? '' ?>">
-        <div class="text-danger small"><?= $errors['phone'] ?? '' ?></div>
+        <input type="text" name="number" class="form-control" placeholder="Enter your phone number"
+               value="<?= $user['number'] ?? '' ?>">
+        <div class="text-danger small"><?= $errors['number'] ?? '' ?></div>
       </div>
 
       <!-- Submit Button -->
