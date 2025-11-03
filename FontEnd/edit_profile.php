@@ -18,24 +18,37 @@ if (isset($_GET['id'])) {
 }
 
 if (isset($_POST['submit'])) {
+    $id   = Validation($_POST['id']);
     $name   = Validation($_POST['name']);
     $email  = Validation($_POST['email']);
     $number = Validation($_POST['number']);
+    $password = $_POST['password'];
 
-    // ✅ Validation checks
+    // Validation checks
     if (empty($name)) {
         $errors['name'] = "Name is required.";
+    }else{
+        $data['name'] = $name ;
     }
     if (empty($email)) {
         $errors['email'] = "Email is required.";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $errors['email'] = "Invalid email format.";
+    }else{
+        $data['email'] = $email;
     }
     if (empty($number)) {
         $errors['number'] = "Phone number is required.";
-    }
+    }else {
+    $pattern = '/^(\+880|880|00880|01)[3-9]\d{8}$/';
 
-    // ✅ Handle image upload if provided
+    if (!preg_match($pattern, $number)) {
+        $errors['number'] = "Please enter a valid Bangladeshi mobile number (e.g., +88017XXXXXXXX).";
+    }
+    $data['number'] = $number;
+}
+
+    //  Handle image upload if provided
     if (!empty($_FILES['image']['name'])) {
         $imageName = $_FILES['image']['name'];
         $imageTmp  = $_FILES['image']['tmp_name'];
@@ -68,14 +81,10 @@ if (isset($_POST['submit'])) {
             }
         }
     } else {
-        $data['image'] = $user['image'] ?? null; // keep old image if not uploaded
+        $data['image'] = $user['image'] ?? null; 
     }
 if (empty($errors)) {
-    // ✅ Always hash the password before storing
-    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
-    // ✅ Correct SQL syntax
-     $query = "UPDATE user 
+     $query = "UPDATE users 
               SET name = :name,
                   email = :email,
                   image = :image,
@@ -85,28 +94,22 @@ if (empty($errors)) {
 
     $stmt = $conn->prepare($query);
 
-    // ✅ Bind parameters safely
     $stmt->bindParam(':name', $name, PDO::PARAM_STR);
     $stmt->bindParam(':email', $email, PDO::PARAM_STR);
     $stmt->bindParam(':image', $data['image'], PDO::PARAM_STR);
-    $stmt->bindParam(':number', $number, PDO::PARAM_STR); // phone number often treated as string
-    $stmt->bindParam(':password', $hashedPassword, PDO::PARAM_STR);
-
-    // ✅ Execute and check
-    if ($stmt->execute()) {
-        $_SESSION['success'] = "✅ Profile created successfully!";
-        header("Location: profile.php");
-        exit;
-    } else {
-        $errors['database'] = "❌ Something went wrong. Please try again.";
-    }
+    $stmt->bindParam(':number', $number, PDO::PARAM_STR); 
+    $stmt->bindParam(':password', $password, PDO::PARAM_STR);
+    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+   
+     if ($stmt->execute()) {
+            $_SESSION['success'] = "update profile successful!";
+            header("Location: profile.php");
+            exit;
+        } else {
+            $errors['database'] = "Something went wrong. Please try again.";
+        }
 }
-
 }
-?>
-
-<?php
-
 
 ?>
 
@@ -117,94 +120,129 @@ if (empty($errors)) {
 <style>
     body {
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #e3f2fd 0%, #b2ebf2 100%);
-
+      background: linear-gradient(135deg, #e0f7fa, #b2ebf2);
+      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
     }
+
     .form-container {
-      background: rgba(255, 255, 255, 0.9);
-      backdrop-filter: blur(10px);
-      border: 1px solid #e0e0e0;
-      border-radius: 1.2rem;
-      padding: 2rem;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(15px);
+      border-radius: 1.5rem;
+      padding: 2.5rem;
       width: 100%;
-      max-width: 650px;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      max-width: 700px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
       transition: all 0.3s ease;
     }
+
     .form-container:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+      transform: translateY(-5px);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.12);
     }
+
     .form-title {
       color: #0288d1;
-      font-weight: 600;
+      font-weight: 700;
       text-transform: uppercase;
-
+      text-align: center;
+      letter-spacing: 1px;
+      margin-bottom: 2rem;
     }
+
     .form-label {
       font-weight: 500;
       color: #37474f;
     }
-    .btn-primary {
-      background: #0288d1;
-      border: none;
+
+    .form-control {
+      border-radius: 0.8rem;
+      padding: 0.6rem 1rem;
       transition: all 0.3s ease;
     }
+
+    .form-control:focus {
+      border-color: #0288d1;
+      box-shadow: 0 0 8px rgba(2, 136, 209, 0.2);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #0288d1, #0277bd);
+      border: none;
+      border-radius: 1rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
     .btn-primary:hover {
-      background: #0277bd;
-      box-shadow: 0 4px 12px rgba(2, 119, 189, 0.3);
+      transform: scale(1.05);
+      box-shadow: 0 8px 20px rgba(2, 119, 189, 0.3);
+    }
+
+    img.profile-preview {
+      border-radius: 1rem;
+      margin-top: 0.5rem;
+      border: 2px solid #0288d1;
+      transition: all 0.3s ease;
+    }
+
+    img.profile-preview:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 20px rgba(2, 136, 209, 0.3);
+    }
+
+    .text-danger {
+      font-size: 0.85rem;
+      margin-top: 0.2rem;
     }
 </style>
 </head>
 
 <body>
 <section class="form-container">
-  <h1 class="form-title mb-4">Update Your Profile</h1>
+  <h1 class="form-title">Update Your Profile</h1>
 
   <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST" enctype="multipart/form-data">
-
-    <input type="hidden" name="usersId" value="<?= $user['id'] ?? '' ?>">
+    <input type="hidden" name="id" value="<?= $user['id'] ?? '' ?>">
 
     <div class="mb-3">
       <label class="form-label">Name</label>
       <input type="text" name="name" class="form-control" value="<?= $user['name'] ?? '' ?>">
-      <div class="text-danger small"><?= $errors['name'] ?? '' ?></div>
+      <div class="text-danger"><?= $errors['name'] ?? '' ?></div>
     </div>
 
     <div class="mb-3">
       <label class="form-label">Email</label>
       <input type="email" name="email" class="form-control" value="<?= $user['email'] ?? '' ?>">
-      <div class="text-danger small"><?= $errors['email'] ?? '' ?></div>
+      <div class="text-danger"><?= $errors['email'] ?? '' ?></div>
     </div>
 
     <div class="mb-3">
       <label class="form-label">Profile Image</label>
       <input type="file" name="image" class="form-control">
       <?php if (!empty($user['image'])): ?>
-          <img src="assets/upload/profile/<?= $user['image'] ?>" alt="Profile" class="mt-2 rounded" width="100">
+          <img src="assets/upload/profile/<?= $user['image'] ?>" alt="Profile" class="profile-preview" width="120">
       <?php endif; ?>
-      <div class="text-danger small"><?= $errors['image'] ?? '' ?></div>
+      <div class="text-danger"><?= $errors['image'] ?? '' ?></div>
     </div>
 
     <div class="mb-3">
       <label class="form-label">Phone</label>
       <input type="text" name="number" class="form-control" value="<?= $user['number'] ?? '' ?>">
-      <div class="text-danger small"><?= $errors['number'] ?? '' ?></div>
+      <div class="text-danger"><?= $errors['number'] ?? '' ?></div>
     </div>
+
     <div class="mb-3">
-      <label class="form-label">Password</label>
-      <input type="text" name="password" class="form-control" value="<?= $user['password'] ?? '' ?>">
-      <div class="text-danger small"><?= $errors['password'] ?? '' ?></div>
+      <input type="text" name="password" class="form-control" hidden value="<?= $user['password'] ?? '' ?>">
     </div>
 
     <?php if (!empty($errors['db'])): ?>
       <div class="alert alert-danger"><?= $errors['db'] ?></div>
     <?php endif; ?>
 
-    <button type="submit" name="submit" class="btn btn-primary w-100 py-2">Update</button>
+    <button type="submit" name="submit" class="btn btn-primary w-100 py-2 mt-3">Update</button>
   </form>
 </section>
 
