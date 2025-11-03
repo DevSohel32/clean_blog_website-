@@ -8,9 +8,14 @@ session_start();
 $errors = [];
 $data = [];
 
-// Fetch logged-in user info if needed
-// Example: $userId = $_SESSION['user_id']; 
-// $user = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM users WHERE id = $userId"));
+if (isset($_GET['id'])) {
+    $id = base64_decode($_GET['id']);
+    $query = "SELECT * FROM users WHERE id = :id";
+    $stmt = $conn->prepare($query);
+    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+    $stmt->execute();
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+}
 
 if (isset($_POST['submit'])) {
     $name   = Validation($_POST['name']);
@@ -65,11 +70,44 @@ if (isset($_POST['submit'])) {
     } else {
         $data['image'] = $user['image'] ?? null; // keep old image if not uploaded
     }
- if(empty($errors)){
-    $query = "INSERT * FROM user(name,email,image,number,password) VALUES(:name,:email,:image,:number,:password)";
-    
- }
+if (empty($errors)) {
+    // ✅ Always hash the password before storing
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+    // ✅ Correct SQL syntax
+     $query = "UPDATE user 
+              SET name = :name,
+                  email = :email,
+                  image = :image,
+                  number = :number,
+                  password = :password
+              WHERE id = :id";
+
+    $stmt = $conn->prepare($query);
+
+    // ✅ Bind parameters safely
+    $stmt->bindParam(':name', $name, PDO::PARAM_STR);
+    $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+    $stmt->bindParam(':image', $data['image'], PDO::PARAM_STR);
+    $stmt->bindParam(':number', $number, PDO::PARAM_STR); // phone number often treated as string
+    $stmt->bindParam(':password', $hashedPassword, PDO::PARAM_STR);
+
+    // ✅ Execute and check
+    if ($stmt->execute()) {
+        $_SESSION['success'] = "✅ Profile created successfully!";
+        header("Location: profile.php");
+        exit;
+    } else {
+        $errors['database'] = "❌ Something went wrong. Please try again.";
+    }
 }
+
+}
+?>
+
+<?php
+
+
 ?>
 
 <!DOCTYPE html>
@@ -155,6 +193,11 @@ if (isset($_POST['submit'])) {
       <label class="form-label">Phone</label>
       <input type="text" name="number" class="form-control" value="<?= $user['number'] ?? '' ?>">
       <div class="text-danger small"><?= $errors['number'] ?? '' ?></div>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Password</label>
+      <input type="text" name="password" class="form-control" value="<?= $user['password'] ?? '' ?>">
+      <div class="text-danger small"><?= $errors['password'] ?? '' ?></div>
     </div>
 
     <?php if (!empty($errors['db'])): ?>

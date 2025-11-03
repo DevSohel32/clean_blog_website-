@@ -75,7 +75,7 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
             <!-- Action Buttons -->
             <div class="mt-4">
-                <a href="edit_profile.php" class="btn btn-primary me-2">
+                <a href="edit_profile.php?id=<?= base64_encode($user['id']) ?>" class="btn btn-primary me-2">
                     <i class="bi bi-pencil-square me-1"></i> Edit Profile
                 </a>
                 <a href="change_password.php" class="btn btn-secondary">
