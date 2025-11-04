@@ -51,12 +51,15 @@ if (isset($_POST['submit'])) {
         $data['confirm'] = $data;
     }
     if (empty($errors)) {
+         $role_id = 1;
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-        $query = "INSERT INTO users(name,email,password) VALUES(:name,:email,:password)";
+        $query = "INSERT INTO users (name, email, password_hash, role_id)
+            VALUES (:name, :email, :password_hash, :role_id);";
         $stmt = $conn->prepare($query);
         $stmt->bindParam(':name', $name, PDO::PARAM_STR);
         $stmt->bindParam(':email', $email, PDO::PARAM_STR);
-        $stmt->bindParam(':password', $hashedPassword, PDO::PARAM_STR);
+        $stmt->bindParam(':password_hash', $hashedPassword, PDO::PARAM_STR);
+        $stmt->bindParam(':role_id', $role_id, PDO::PARAM_INT);
 
         if ($stmt->execute()) {
             $_SESSION['success'] = "Registration successful!";

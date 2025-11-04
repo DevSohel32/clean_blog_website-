@@ -5,7 +5,7 @@ session_start();
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container px-5">
-        <a class="navbar-brand" href="index.html">Start Bootstrap</a>
+        <a class="navbar-brand" href="index.php">Start Bootstrap</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span
                 class="navbar-toggler-icon"></span></button>
@@ -19,6 +19,7 @@ session_start();
                 if (isset($_SESSION['user_id'])) {
                    
                     ?>
+                    <li class="nav-item"><a class="nav-link" href="myPosts.php">My Post</a></li>
                     <li class="nav-item"><a class="nav-link" href="profile.php">Profile</a></li>
                     
                 <?php
