@@ -69,7 +69,7 @@ if (isset($_POST['submit'])) {
             }
         }
     } else {
-        $data['image'] = $user['image'] ?? null;
+        $data['image'] = $user['image_url'];
     }
 
     // Update DB if no validation errors
@@ -172,9 +172,9 @@ img.profile-preview {border-radius:1rem; margin-top:0.5rem; border:2px solid #02
 
     <div class="mb-3">
         <label class="form-label">Profile Image</label>
-        <input type="file" name="image" class="form-control">
-        <?php if (!empty($data['image']) || !empty($user['image'])): ?>
-            <img src="assets/upload/profile/<?= htmlspecialchars($data['image'] ?? $user['image']) ?>" 
+        <input type="file" name="image" class="form-control"  value="<?= $user['image_url'] ?>">
+        <?php if (!empty($data['image_url']) || !empty($user['image_url'])): ?>
+            <img src="assets/upload/profile/<?= htmlspecialchars($data['image_url'] ?? $user['image_url']) ?>" 
                  alt="Profile" class="profile-preview" width="120">
         <?php endif; ?>
         <div class="text-danger"><?= $errors['image'] ?? '' ?></div>
