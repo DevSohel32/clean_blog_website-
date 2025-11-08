@@ -29,7 +29,7 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 <div class="container my-5">
 
     <div class="card shadow-lg border-0 mx-auto" style="max-width: 900px; border-radius: 25px; overflow: hidden;">
-        
+
         <!-- ✅ Success Message -->
         <?php if (isset($_SESSION['success'])) { ?>
             <div role="alert" class="alert alert-success mb-6 shadow-md d-flex align-items-center gap-3 rounded-3 p-3">
@@ -48,7 +48,8 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
                         alt="Profile" class="w-100 h-100 object-fit-cover">
                 </div>
                 <!-- Online Badge -->
-                <span class="position-absolute bottom-0 start-50 translate-middle-x bg-success rounded-circle border border-white" 
+                <span
+                    class="position-absolute bottom-0 start-50 translate-middle-x bg-success rounded-circle border border-white"
                     style="width: 20px; height: 20px;"></span>
             </div>
             <h2 class="fw-bold"><?= htmlspecialchars($user['name']) ?></h2>
@@ -90,7 +91,8 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
                     class="btn btn-gradient-primary text-white px-5 py-2 rounded-pill shadow-sm fw-semibold">
                     <i class="bi bi-pencil-square me-2"></i> Edit Profile
                 </a>
-                <a href="change_password.php" class="btn btn-outline-primary px-5 py-2 rounded-pill shadow-sm fw-semibold">
+                <a href="change_password.php"
+                    class="btn btn-outline-primary px-5 py-2 rounded-pill shadow-sm fw-semibold">
                     <i class="bi bi-shield-lock me-2"></i> Change Password
                 </a>
             </div>

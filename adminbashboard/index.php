@@ -2,18 +2,30 @@
 <html lang="en" data-theme="corporate">
 
 <head>
-    <?php include 'layout/head.php'; 
+    <?php include 'layout/head.php';
+    session_start();
+    //     if (!isset($_SESSION['user_id'])) {
+//     header("Location:login.php");
+//     exit;
+// }
     
-    if (!isset($_SESSION['user_id'])) {
-    header("Location:login.php");
-    exit;
-}
+    ?>
 
-?>
-   
 </head>
 
 <body class="bg-base-200">
+    <?php if (isset($_SESSION['success'])) { ?>
+        <div role="alert" class="alert alert-success mb-6 shadow-md flex items-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span class="font-medium">
+                <?php echo $_SESSION['name'] ?? '' ?>
+            </span>
+        </div>
+    <?php }
+    unset($_SESSION['success']); ?>
     <!-- Navbar -->
     <div class="navbar bg-neutral text-neutral-content shadow-lg">
         <div class="flex-none">
@@ -374,8 +386,6 @@
             <?php include 'layout/footer.php'; ?>
         </main>
     </div>
-
-
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
