@@ -17,18 +17,18 @@ session_start();
                 <li class="nav-item"><a class="nav-link" href="blog-home.php">Blog Post</a></li>
                 <?php
                 if (isset($_SESSION['user_id'])) {
-                   
+
                     ?>
                     <li class="nav-item"><a class="nav-link" href="myPosts.php">My Post</a></li>
                     <li class="nav-item"><a class="nav-link" href="profile.php">Profile</a></li>
-                    
-                <?php
+
+                    <?php
                 } else {
                     // User is not logged in
                     ?>
-                    <li class="nav-item"><a class="nav-link" href="../adminbashboard/login.php">Login</a></li>
-                    <li class="nav-item"><a class="nav-link" href="../adminbashboard/register.php">Register</a></li>
-                <?php
+                    <li class="nav-item"><a class="nav-link" href="../adminDashboard/login.php">Login</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../adminDashboard/register.php">Register</a></li>
+                    <?php
                 }
                 ?>
 

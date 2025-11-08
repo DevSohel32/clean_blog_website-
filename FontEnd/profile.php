@@ -4,7 +4,7 @@ include 'navBar.php';
 
 // ✅ Redirect if not logged in
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../adminbashboard/login.php");
+    header("Location: ../adminDashboard/login.php");
     exit;
 }
 
@@ -80,7 +80,7 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
                 <div class="col-md-6 col-lg-4">
                     <div class="p-4 border rounded-4 shadow-sm bg-light hover-shadow transition text-center">
                         <small class="text-muted">Role</small>
-                        <div class="fw-bold fs-5 mt-1"><?= htmlspecialchars($user['role'] ?? 'User') ?></div>
+                        <div class="fw-bold fs-5 mt-1"><?= htmlspecialchars($user['role_id'] ?? 'User') ?></div>
                     </div>
                 </div>
             </div>

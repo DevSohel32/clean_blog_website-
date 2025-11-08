@@ -89,9 +89,10 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                 <div class="card bg-primary text-primary-content shadow-xl hover:shadow-2xl transition-shadow">
                     <div class="card-body">
-                        <h2 class="card-title">Primary Card</h2>
+                        <h2 class="card-title">Total User Card</h2>
                         <div class="card-actions justify-end">
-                            <a href="#" class="link link-hover">View Details <i class="fas fa-angle-right ml-1"></i></a>
+                            <a href="tables.php" class="link link-hover">View Details <i
+                                    class="fas fa-angle-right ml-1"></i></a>
                         </div>
                     </div>
                 </div>
