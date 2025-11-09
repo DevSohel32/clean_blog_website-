@@ -1,12 +1,5 @@
 <?php
 include 'layout/head.php';
-
-if (isset($_GET)) {
-
-}
-
-
-
 ?>
 
 <body>

@@ -1,8 +1,3 @@
-<?php
-session_start();
-?>
-
-
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container px-5">
         <a class="navbar-brand" href="index.php">Start Bootstrap</a>
